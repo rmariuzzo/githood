@@ -18,7 +18,9 @@
   "license": "SEE LICENSE IN ./LICENSE",
   "author": "Rubens Mariuzzo <rubens@mariuzzo.com>",
   "main": "dist/githood.js",
-  "bin": "bin.js",
+  "bin": {
+    "githood": "bin.js"
+  },
   "files": [
     "bin.js",
     "src"
