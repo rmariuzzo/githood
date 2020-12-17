@@ -2,29 +2,43 @@
   "name": "githood",
   "version": "0.0.1",
   "description": "Run git commands in a group of repos.",
-  "main": "dist/githood.js",
-  "scripts": {
-    "dev": "onchange -ikv 'src/**/*' -- npm run build",
-    "compile": "npm run build -- --noEmit",
-    "build": "tsc --project tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postversion": "git push origin && git push origin --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rmariuzzo/githood.git"
-  },
   "keywords": [
     "git",
     "multi",
     "tool"
   ],
-  "author": "Rubens Mariuzzo <rubens@mariuzzo.com>",
-  "license": "SEE LICENSE IN ./LICENSE",
+  "homepage": "https://github.com/rmariuzzo/githood#readme",
   "bugs": {
     "url": "https://github.com/rmariuzzo/githood/issues"
   },
-  "homepage": "https://github.com/rmariuzzo/githood#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmariuzzo/githood.git"
+  },
+  "license": "SEE LICENSE IN ./LICENSE",
+  "author": "Rubens Mariuzzo <rubens@mariuzzo.com>",
+  "main": "dist/githood.js",
+  "bin": "bin.js",
+  "files": [
+    "bin.js",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "compile": "npm run build -- --noEmit",
+    "dev": "onchange -ikv 'src/**/*' -- npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postversion": "git push origin && git push origin --tags"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix",
+    "*.{ts,md}": "prettier --write"
+  },
   "dependencies": {
     "execa": "^5.0.0",
     "ini": "^2.0.0",
@@ -42,14 +56,5 @@
     "onchange": "^7.1.0",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.ts": "eslint --cache --fix",
-    "*.{ts,md}": "prettier --write"
   }
 }
