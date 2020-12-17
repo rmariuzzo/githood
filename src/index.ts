@@ -3,9 +3,7 @@ import parseArgv from 'yargs-parser'
 import { githood } from './githood'
 import { errors } from './errors'
 
-const { _: args, help, debug, org, list, count } = parseArgv(
-  process.argv.slice(2)
-)
+const { help, debug, org, list, count } = parseArgv(process.argv.slice(2))
 
 if (help) {
   console.info(`githood`)

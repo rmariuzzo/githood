@@ -9,10 +9,13 @@ type Options = {
 }
 
 export const githood = async (options: Options) => {
-  const gitRepos = await findGitRepos({ cwd: options.cwd, filterByGithubUsername: options.org })
+  const gitRepos = await findGitRepos({
+    cwd: options.cwd,
+    filterByGithubUsername: options.org
+  })
 
   if (options.list) {
-    gitRepos.forEach(gitRepo => {
+    gitRepos.forEach((gitRepo) => {
       console.log(gitRepo.name)
     })
   }
