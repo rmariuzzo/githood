@@ -27,9 +27,11 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
+    "clean": "rimraf 'dist'",
     "compile": "npm run build -- --noEmit",
     "dev": "onchange -ikv 'src/**/*' -- npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "npm run clean",
     "postversion": "git push origin && git push origin --tags"
   },
   "husky": {
@@ -57,6 +59,7 @@
     "lint-staged": "^10.5.3",
     "onchange": "^7.1.0",
     "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.1.3"
   }
 }
