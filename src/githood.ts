@@ -1,6 +1,9 @@
+import execa from 'execa'
 import { findGitRepos } from './find-git-repos'
+import { runInGitRepos } from './run-in-git-repos'
 
 type Options = {
+  command: string[]
   org: string
   list: boolean
   count: boolean
@@ -22,5 +25,12 @@ export const githood = async (options: Options) => {
 
   if (options.count) {
     console.log(gitRepos.length)
+  }
+
+  if (options.command.length > 0) {
+    await runInGitRepos(
+      options.command,
+      gitRepos.map((gitRepo) => gitRepo.path)
+    )
   }
 }

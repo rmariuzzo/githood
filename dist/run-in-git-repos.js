@@ -35,35 +35,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.githood = void 0;
-var find_git_repos_1 = require("./find-git-repos");
-var run_in_git_repos_1 = require("./run-in-git-repos");
-var githood = function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var gitRepos;
+exports.runInGitRepos = void 0;
+var execa_1 = __importDefault(require("execa"));
+var runInGitRepos = function (command, gitRepoPaths) { return __awaiter(void 0, void 0, void 0, function () {
+    var file, args, _i, gitRepoPaths_1, gitRepoPath, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, find_git_repos_1.findGitRepos({
-                    cwd: options.cwd,
-                    filterByGithubUsername: options.org
-                })];
+            case 0:
+                file = command[0], args = command.slice(1);
+                _i = 0, gitRepoPaths_1 = gitRepoPaths;
+                _a.label = 1;
             case 1:
-                gitRepos = _a.sent();
-                if (options.list) {
-                    gitRepos.forEach(function (gitRepo) {
-                        console.log(gitRepo.name);
-                    });
-                }
-                if (options.count) {
-                    console.log(gitRepos.length);
-                }
-                if (!(options.command.length > 0)) return [3 /*break*/, 3];
-                return [4 /*yield*/, run_in_git_repos_1.runInGitRepos(options.command, gitRepos.map(function (gitRepo) { return gitRepo.path; }))];
+                if (!(_i < gitRepoPaths_1.length)) return [3 /*break*/, 4];
+                gitRepoPath = gitRepoPaths_1[_i];
+                return [4 /*yield*/, execa_1.default(file, args, { cwd: gitRepoPath })];
             case 2:
-                _a.sent();
+                result = _a.sent();
+                console.info(gitRepoPath + ":");
+                console.log(result.stdout);
+                console.log();
                 _a.label = 3;
-            case 3: return [2 /*return*/];
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.githood = githood;
+exports.runInGitRepos = runInGitRepos;

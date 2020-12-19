@@ -1,6 +1,6 @@
 # githood
 
-Run git commands in a group of repos.
+Run commands in a group of git repos.
 
 | ⚠️ This project is under development.
 | -

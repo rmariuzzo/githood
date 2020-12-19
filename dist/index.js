@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var yargs_parser_1 = __importDefault(require("yargs-parser"));
 var githood_1 = require("./githood");
 var errors_1 = require("./errors");
-var _a = yargs_parser_1.default(process.argv.slice(2)), help = _a.help, debug = _a.debug, org = _a.org, list = _a.list, count = _a.count;
+var _a = yargs_parser_1.default(process.argv.slice(2)), args = _a._, help = _a.help, debug = _a.debug, org = _a.org, list = _a.list, count = _a.count;
+var nothingToDo = args.length === 0 && !list && !count;
 /* prettier-ignore */
-if (help) {
+if (help || nothingToDo) {
     console.info("githood");
-    console.info("Usage: githood [git-sub-command]");
+    console.info("Usage: githood [command] [...args]");
     console.info("Options:");
     console.info("  --org        Run commands in repos belonging to a GitHub org.");
     console.info("  --list       List all git repos.");
@@ -20,6 +21,7 @@ if (help) {
     process.exit(0);
 }
 githood_1.githood({
+    command: args !== null && args !== void 0 ? args : [],
     org: org,
     list: Boolean(list),
     count: Boolean(count),
@@ -30,7 +32,8 @@ githood_1.githood({
     process.exit(0);
 })
     .catch(function (error) {
-    console.error('githood:', errors_1.errors.unhandled.code);
-    console.error(error);
+    var _a;
+    console.error('githood:', errors_1.errors.unhandled.description);
+    console.error((_a = error.message) !== null && _a !== void 0 ? _a : error);
     process.exit(errors_1.errors.unhandled.code);
 });

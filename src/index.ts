@@ -3,12 +3,16 @@ import parseArgv from 'yargs-parser'
 import { githood } from './githood'
 import { errors } from './errors'
 
-const { help, debug, org, list, count } = parseArgv(process.argv.slice(2))
+const { _: args, help, debug, org, list, count } = parseArgv(
+  process.argv.slice(2)
+)
+
+const nothingToDo = args.length === 0 && !list && !count
 
 /* prettier-ignore */
-if (help) {
+if (help || nothingToDo) {
   console.info(`githood`)
-  console.info(`Usage: githood [git-sub-command]`)
+  console.info(`Usage: githood [command] [...args]`)
   console.info(`Options:`)
   console.info(`  --org        Run commands in repos belonging to a GitHub org.`)
   console.info(`  --list       List all git repos.`)
@@ -19,6 +23,7 @@ if (help) {
 }
 
 githood({
+  command: args ?? [],
   org,
   list: Boolean(list),
   count: Boolean(count),
@@ -29,7 +34,7 @@ githood({
     process.exit(0)
   })
   .catch((error) => {
-    console.error('githood:', errors.unhandled.code)
-    console.error(error)
+    console.error('githood:', errors.unhandled.description)
+    console.error(error.message ?? error)
     process.exit(errors.unhandled.code)
   })
