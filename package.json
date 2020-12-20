@@ -1,6 +1,6 @@
 {
   "name": "githood",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run commands in a group of git repos.",
   "keywords": [
     "git",
