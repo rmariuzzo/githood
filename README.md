@@ -58,6 +58,6 @@ Filter git repos by GitHub organization or username.
 
 ---
 
-[MIT License](./LICENSE)
-
+License: [MIT](./LICENSE)
+<br>
 Author: [Rubens Mariuzzo](https://github.com/rmariuzzo)
