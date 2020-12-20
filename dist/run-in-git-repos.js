@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runInGitRepos = void 0;
+var chalk_1 = __importDefault(require("chalk"));
 var execa_1 = __importDefault(require("execa"));
 var runInGitRepos = function (command, gitRepoPaths) { return __awaiter(void 0, void 0, void 0, function () {
     var file, args, _i, gitRepoPaths_1, gitRepoPath, result;
@@ -55,7 +56,7 @@ var runInGitRepos = function (command, gitRepoPaths) { return __awaiter(void 0, 
                 return [4 /*yield*/, execa_1.default(file, args, { cwd: gitRepoPath })];
             case 2:
                 result = _a.sent();
-                console.info(gitRepoPath + ":");
+                console.info(chalk_1.default.bgWhite.black(chalk_1.default.bold(gitRepoPath) + ": " + command.join(' ')));
                 console.log(result.stdout);
                 console.log();
                 _a.label = 3;

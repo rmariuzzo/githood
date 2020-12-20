@@ -45,6 +45,7 @@
     "*.{ts,md}": "prettier --write"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "execa": "^5.0.0",
     "ini": "^2.0.0",
     "yargs-parser": "^20.2.4"
