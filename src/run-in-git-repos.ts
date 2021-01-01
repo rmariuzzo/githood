@@ -12,6 +12,5 @@ export const runInGitRepos = async (
       chalk.bgWhite.black(`${chalk.bold(gitRepoPath)}: ${command.join(' ')}`)
     )
     console.log(result.stdout)
-    console.log()
   }
 }

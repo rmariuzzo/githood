@@ -49,7 +49,7 @@ var pstat = util_1.promisify(fs_1.default.stat);
 var preadFile = util_1.promisify(fs_1.default.readFile);
 var githubRemoteUrlMatcher = /[/@]github\.com[/:](?<username>[^/]+)\/(?<repository>.+)\.git/;
 var findGitRepos = function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var entries, entryDescs, gitRepos, filteredGitRepos;
+    var entries, entryDescs, gitRepos, filteredGitReposByGithubUsername, filteredGitReposByName;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, preadDir(options.cwd)];
@@ -83,7 +83,7 @@ var findGitRepos = function (options) { return __awaiter(void 0, void 0, void 0,
             case 2:
                 entryDescs = _a.sent();
                 gitRepos = entryDescs.filter(function (desc) { return desc.hasGitConfig; });
-                filteredGitRepos = options.filterByGithubUsername
+                filteredGitReposByGithubUsername = options.filterByGithubUsername
                     ? gitRepos.filter(function (gitRepo) {
                         var _a, _b, _c, _d;
                         var url = ((_b = (_a = gitRepo.gitConfig['remote "origin"']) === null || _a === void 0 ? void 0 : _a.url) !== null && _b !== void 0 ? _b : '').toLowerCase();
@@ -94,7 +94,16 @@ var findGitRepos = function (options) { return __awaiter(void 0, void 0, void 0,
                             username === options.filterByGithubUsername);
                     })
                     : gitRepos;
-                return [2 /*return*/, filteredGitRepos.map(function (desc) { return ({
+                filteredGitReposByName = options.filterByRepoName
+                    ? filteredGitReposByGithubUsername.filter(function (gitRepo) {
+                        var _a, _b, _c;
+                        var filter = (_b = (_a = options.filterByRepoName) === null || _a === void 0 ? void 0 : _a.toLowerCase()) !== null && _b !== void 0 ? _b : '';
+                        var useRegExp = filter.match(/^\/(?<expression>.+)\//);
+                        return ((_c = useRegExp === null || useRegExp === void 0 ? void 0 : useRegExp.groups) === null || _c === void 0 ? void 0 : _c.expression) ? gitRepo.name.toLowerCase().match(useRegExp.groups.expression)
+                            : gitRepo.name.toLowerCase().includes(filter.toLowerCase());
+                    })
+                    : filteredGitReposByGithubUsername;
+                return [2 /*return*/, filteredGitReposByName.map(function (desc) { return ({
                         name: desc.name,
                         path: desc.path
                     }); })];

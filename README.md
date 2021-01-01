@@ -37,6 +37,14 @@ githood git status --org rmariuzzo
 
 ## Options
 
+### `--name`
+
+Run commands in repos matching the given name. A regexp can be provided as `'/expr/'`.
+
+### `--org`
+
+Filter git repos by GitHub organization or username.
+
 ### `--count`
 
 Display the number of git repos.
@@ -44,10 +52,6 @@ Display the number of git repos.
 ### `--list`
 
 Display all git repos.
-
-### `--org`
-
-Filter git repos by GitHub organization or username.
 
 ## Development
 

@@ -4,6 +4,7 @@ import { runInGitRepos } from './run-in-git-repos'
 
 type Options = {
   command: string[]
+  name: string
   org: string
   list: boolean
   count: boolean
@@ -14,7 +15,8 @@ type Options = {
 export const githood = async (options: Options) => {
   const gitRepos = await findGitRepos({
     cwd: options.cwd,
-    filterByGithubUsername: options.org
+    filterByGithubUsername: options.org,
+    filterByRepoName: options.name
   })
 
   if (options.list) {

@@ -58,7 +58,6 @@ var runInGitRepos = function (command, gitRepoPaths) { return __awaiter(void 0, 
                 result = _a.sent();
                 console.info(chalk_1.default.bgWhite.black(chalk_1.default.bold(gitRepoPath) + ": " + command.join(' ')));
                 console.log(result.stdout);
-                console.log();
                 _a.label = 3;
             case 3:
                 _i++;

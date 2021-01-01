@@ -3,7 +3,7 @@ import parseArgv from 'yargs-parser'
 import { githood } from './githood'
 import { errors } from './errors'
 
-const { _: args, help, debug, org, list, count } = parseArgv(
+const { _: args, help, debug, name, org, list, count } = parseArgv(
   process.argv.slice(2)
 )
 
@@ -14,6 +14,8 @@ if (help || nothingToDo) {
   console.info(`githood`)
   console.info(`Usage: githood [command] [...args]`)
   console.info(`Options:`)
+  console.info(`  --name       Run commands in repos matching the given name.`)
+  console.info(`               A regexp can be provided as '/expr/'.`)
   console.info(`  --org        Run commands in repos belonging to a GitHub org.`)
   console.info(`  --list       List all git repos.`)
   console.info(`  --count      Count all git repos.`)
@@ -24,6 +26,7 @@ if (help || nothingToDo) {
 
 githood({
   command: args ?? [],
+  name,
   org,
   list: Boolean(list),
   count: Boolean(count),

@@ -17,6 +17,7 @@ type GitRepo = {
 export const findGitRepos = async (options: {
   cwd: string
   filterByGithubUsername?: string
+  filterByRepoName?: string
 }): Promise<GitRepo[]> => {
   const entries = await preadDir(options.cwd)
 
@@ -37,7 +38,7 @@ export const findGitRepos = async (options: {
 
   const gitRepos = entryDescs.filter((desc) => desc.hasGitConfig)
 
-  const filteredGitRepos = options.filterByGithubUsername
+  const filteredGitReposByGithubUsername = options.filterByGithubUsername
     ? gitRepos.filter((gitRepo) => {
         const url = (
           (gitRepo.gitConfig['remote "origin"']?.url as string) ?? ''
@@ -52,7 +53,17 @@ export const findGitRepos = async (options: {
       })
     : gitRepos
 
-  return filteredGitRepos.map((desc) => ({
+  const filteredGitReposByName = options.filterByRepoName
+    ? filteredGitReposByGithubUsername.filter((gitRepo) => {
+        const filter = options.filterByRepoName?.toLowerCase() ?? ''
+        const useRegExp = filter.match(/^\/(?<expression>.+)\//)
+        return useRegExp?.groups?.expression
+          ? gitRepo.name.toLowerCase().match(useRegExp.groups.expression)
+          : gitRepo.name.toLowerCase().includes(filter.toLowerCase())
+      })
+    : filteredGitReposByGithubUsername
+
+  return filteredGitReposByName.map((desc) => ({
     name: desc.name,
     path: desc.path
   }))
