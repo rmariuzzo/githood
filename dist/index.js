@@ -14,7 +14,7 @@ if (help || nothingToDo) {
     console.info("Usage: githood [command] [...args]");
     console.info("Options:");
     console.info("  --name       Run commands in repos matching the given name.");
-    console.info("               A regexp can be provided as '/regexp/'.");
+    console.info("               A regexp can be provided as '/expr/'.");
     console.info("  --org        Run commands in repos belonging to a GitHub org.");
     console.info("  --list       List all git repos.");
     console.info("  --count      Count all git repos.");
