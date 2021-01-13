@@ -7,10 +7,10 @@ export const runInGitRepos = async (
 ) => {
   const [file, ...args] = command
   for (const gitRepoPath of gitRepoPaths) {
-    const result = await execa(file, args, { cwd: gitRepoPath })
-    console.info(
-      chalk.bgWhite.black(`${chalk.bold(gitRepoPath)}: ${command.join(' ')}`)
-    )
-    console.log(result.stdout)
+    console.info(chalk.bgYellow.black(`${gitRepoPath}: ${command.join(' ')}`))
+    const result = execa(file, args, { cwd: gitRepoPath })
+    result.stdout?.pipe(process.stdout)
+    result.stderr?.pipe(process.stderr)
+    await result
   }
 }

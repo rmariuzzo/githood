@@ -48,8 +48,9 @@ var preadDir = util_1.promisify(fs_1.default.readdir);
 var pstat = util_1.promisify(fs_1.default.stat);
 var preadFile = util_1.promisify(fs_1.default.readFile);
 var githubRemoteUrlMatcher = /[/@]github\.com[/:](?<username>[^/]+)\/(?<repository>.+)\.git/;
+var regularExpressionMatcher = /^\/(?<expression>.+)\//;
 var findGitRepos = function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var entries, entryDescs, gitRepos, filteredGitReposByGithubUsername, filteredGitReposByName;
+    var entries, entryDescs, gitRepos, filteredGitReposByGithubUsername, filteredGitReposByGithubRepoName, filteredGitReposByName;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, preadDir(options.cwd)];
@@ -85,24 +86,42 @@ var findGitRepos = function (options) { return __awaiter(void 0, void 0, void 0,
                 gitRepos = entryDescs.filter(function (desc) { return desc.hasGitConfig; });
                 filteredGitReposByGithubUsername = options.filterByGithubUsername
                     ? gitRepos.filter(function (gitRepo) {
-                        var _a, _b, _c, _d;
-                        var url = ((_b = (_a = gitRepo.gitConfig['remote "origin"']) === null || _a === void 0 ? void 0 : _a.url) !== null && _b !== void 0 ? _b : '').toLowerCase();
+                        var _a, _b, _c, _d, _e, _f, _g, _h;
+                        var filter = (_a = options.filterByGithubUsername) !== null && _a !== void 0 ? _a : '';
+                        var url = ((_c = (_b = gitRepo.gitConfig['remote "origin"']) === null || _b === void 0 ? void 0 : _b.url) !== null && _c !== void 0 ? _c : '').toLowerCase();
                         var isGithubHosted = githubRemoteUrlMatcher.test(url);
-                        var username = (_d = (_c = url.match(githubRemoteUrlMatcher)) === null || _c === void 0 ? void 0 : _c.groups) === null || _d === void 0 ? void 0 : _d.username;
-                        return (isGithubHosted &&
-                            username &&
-                            username === options.filterByGithubUsername);
+                        var username = (_g = (_f = (_e = (_d = url.match(githubRemoteUrlMatcher)) === null || _d === void 0 ? void 0 : _d.groups) === null || _e === void 0 ? void 0 : _e.username) === null || _f === void 0 ? void 0 : _f.toLowerCase()) !== null && _g !== void 0 ? _g : '';
+                        var useRegExp = filter.match(regularExpressionMatcher);
+                        if ((_h = useRegExp === null || useRegExp === void 0 ? void 0 : useRegExp.groups) === null || _h === void 0 ? void 0 : _h.expression) {
+                            return isGithubHosted && username.match(useRegExp.groups.expression);
+                        }
+                        return isGithubHosted && username === filter.toLowerCase();
                     })
                     : gitRepos;
-                filteredGitReposByName = options.filterByRepoName
+                filteredGitReposByGithubRepoName = options.filterByGithubRepoName
                     ? filteredGitReposByGithubUsername.filter(function (gitRepo) {
-                        var _a, _b, _c;
-                        var filter = (_b = (_a = options.filterByRepoName) === null || _a === void 0 ? void 0 : _a.toLowerCase()) !== null && _b !== void 0 ? _b : '';
-                        var useRegExp = filter.match(/^\/(?<expression>.+)\//);
-                        return ((_c = useRegExp === null || useRegExp === void 0 ? void 0 : useRegExp.groups) === null || _c === void 0 ? void 0 : _c.expression) ? gitRepo.name.toLowerCase().match(useRegExp.groups.expression)
-                            : gitRepo.name.toLowerCase().includes(filter.toLowerCase());
+                        var _a, _b, _c, _d, _e, _f, _g, _h;
+                        var filter = (_a = options.filterByGithubRepoName) !== null && _a !== void 0 ? _a : '';
+                        var url = ((_c = (_b = gitRepo.gitConfig['remote "origin"']) === null || _b === void 0 ? void 0 : _b.url) !== null && _c !== void 0 ? _c : '').toLowerCase();
+                        var isGithubHosted = githubRemoteUrlMatcher.test(url);
+                        var repository = (_g = (_f = (_e = (_d = url
+                            .match(githubRemoteUrlMatcher)) === null || _d === void 0 ? void 0 : _d.groups) === null || _e === void 0 ? void 0 : _e.repository) === null || _f === void 0 ? void 0 : _f.toLowerCase()) !== null && _g !== void 0 ? _g : '';
+                        var useRegExp = filter.match(regularExpressionMatcher);
+                        if ((_h = useRegExp === null || useRegExp === void 0 ? void 0 : useRegExp.groups) === null || _h === void 0 ? void 0 : _h.expression) {
+                            return isGithubHosted && repository.match(useRegExp.groups.expression);
+                        }
+                        return isGithubHosted && repository === filter.toLowerCase();
                     })
                     : filteredGitReposByGithubUsername;
+                filteredGitReposByName = options.filterByRepoName
+                    ? filteredGitReposByGithubRepoName.filter(function (gitRepo) {
+                        var _a, _b;
+                        var filter = (_a = options.filterByRepoName) !== null && _a !== void 0 ? _a : '';
+                        var useRegExp = filter.match(regularExpressionMatcher);
+                        return ((_b = useRegExp === null || useRegExp === void 0 ? void 0 : useRegExp.groups) === null || _b === void 0 ? void 0 : _b.expression) ? gitRepo.name.toLowerCase().match(useRegExp.groups.expression)
+                            : gitRepo.name.toLowerCase().includes(filter.toLowerCase());
+                    })
+                    : filteredGitReposByGithubRepoName;
                 return [2 /*return*/, filteredGitReposByName.map(function (desc) { return ({
                         name: desc.name,
                         path: desc.path

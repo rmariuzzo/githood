@@ -44,21 +44,24 @@ var chalk_1 = __importDefault(require("chalk"));
 var execa_1 = __importDefault(require("execa"));
 var runInGitRepos = function (command, gitRepoPaths) { return __awaiter(void 0, void 0, void 0, function () {
     var file, args, _i, gitRepoPaths_1, gitRepoPath, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 file = command[0], args = command.slice(1);
                 _i = 0, gitRepoPaths_1 = gitRepoPaths;
-                _a.label = 1;
+                _c.label = 1;
             case 1:
                 if (!(_i < gitRepoPaths_1.length)) return [3 /*break*/, 4];
                 gitRepoPath = gitRepoPaths_1[_i];
-                return [4 /*yield*/, execa_1.default(file, args, { cwd: gitRepoPath })];
+                console.info(chalk_1.default.bgYellow.black(gitRepoPath + ": " + command.join(' ')));
+                result = execa_1.default(file, args, { cwd: gitRepoPath });
+                (_a = result.stdout) === null || _a === void 0 ? void 0 : _a.pipe(process.stdout);
+                (_b = result.stderr) === null || _b === void 0 ? void 0 : _b.pipe(process.stderr);
+                return [4 /*yield*/, result];
             case 2:
-                result = _a.sent();
-                console.info(chalk_1.default.bgWhite.black(chalk_1.default.bold(gitRepoPath) + ": " + command.join(' ')));
-                console.log(result.stdout);
-                _a.label = 3;
+                _c.sent();
+                _c.label = 3;
             case 3:
                 _i++;
                 return [3 /*break*/, 1];

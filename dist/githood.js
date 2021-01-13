@@ -46,7 +46,8 @@ var githood = function (options) { return __awaiter(void 0, void 0, void 0, func
             case 0: return [4 /*yield*/, find_git_repos_1.findGitRepos({
                     cwd: options.cwd,
                     filterByGithubUsername: options.org,
-                    filterByRepoName: options.name
+                    filterByGithubRepoName: options.remoteName,
+                    filterByRepoName: options.name,
                 })];
             case 1:
                 gitRepos = _a.sent();

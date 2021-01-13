@@ -8,6 +8,7 @@ const pstat = promisify(fs.stat)
 const preadFile = promisify(fs.readFile)
 
 const githubRemoteUrlMatcher = /[/@]github\.com[/:](?<username>[^/]+)\/(?<repository>.+)\.git/
+const regularExpressionMatcher = /^\/(?<expression>.+)\//
 
 type GitRepo = {
   name: string
@@ -17,6 +18,7 @@ type GitRepo = {
 export const findGitRepos = async (options: {
   cwd: string
   filterByGithubUsername?: string
+  filterByGithubRepoName?: string
   filterByRepoName?: string
 }): Promise<GitRepo[]> => {
   const entries = await preadDir(options.cwd)
@@ -40,28 +42,54 @@ export const findGitRepos = async (options: {
 
   const filteredGitReposByGithubUsername = options.filterByGithubUsername
     ? gitRepos.filter((gitRepo) => {
+        const filter = options.filterByGithubUsername ?? ''
         const url = (
           (gitRepo.gitConfig['remote "origin"']?.url as string) ?? ''
         ).toLowerCase()
         const isGithubHosted = githubRemoteUrlMatcher.test(url)
-        const username = url.match(githubRemoteUrlMatcher)?.groups?.username
-        return (
-          isGithubHosted &&
-          username &&
-          username === options.filterByGithubUsername
-        )
+        const username =
+          url.match(githubRemoteUrlMatcher)?.groups?.username?.toLowerCase() ??
+          ''
+
+        const useRegExp = filter.match(regularExpressionMatcher)
+        if (useRegExp?.groups?.expression) {
+          return isGithubHosted && username.match(useRegExp.groups.expression)
+        }
+
+        return isGithubHosted && username === filter.toLowerCase()
       })
     : gitRepos
 
-  const filteredGitReposByName = options.filterByRepoName
+  const filteredGitReposByGithubRepoName = options.filterByGithubRepoName
     ? filteredGitReposByGithubUsername.filter((gitRepo) => {
-        const filter = options.filterByRepoName?.toLowerCase() ?? ''
-        const useRegExp = filter.match(/^\/(?<expression>.+)\//)
+        const filter = options.filterByGithubRepoName ?? ''
+        const url = (
+          (gitRepo.gitConfig['remote "origin"']?.url as string) ?? ''
+        ).toLowerCase()
+        const isGithubHosted = githubRemoteUrlMatcher.test(url)
+        const repository =
+          url
+            .match(githubRemoteUrlMatcher)
+            ?.groups?.repository?.toLowerCase() ?? ''
+
+        const useRegExp = filter.match(regularExpressionMatcher)
+        if (useRegExp?.groups?.expression) {
+          return isGithubHosted && repository.match(useRegExp.groups.expression)
+        }
+
+        return isGithubHosted && repository === filter.toLowerCase()
+      })
+    : filteredGitReposByGithubUsername
+
+  const filteredGitReposByName = options.filterByRepoName
+    ? filteredGitReposByGithubRepoName.filter((gitRepo) => {
+        const filter = options.filterByRepoName ?? ''
+        const useRegExp = filter.match(regularExpressionMatcher)
         return useRegExp?.groups?.expression
           ? gitRepo.name.toLowerCase().match(useRegExp.groups.expression)
           : gitRepo.name.toLowerCase().includes(filter.toLowerCase())
       })
-    : filteredGitReposByGithubUsername
+    : filteredGitReposByGithubRepoName
 
   return filteredGitReposByName.map((desc) => ({
     name: desc.name,
