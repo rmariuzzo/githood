@@ -13,7 +13,7 @@ if (help || nothingToDo) {
     console.info("githood");
     console.info("Usage: githood [command] [...args]");
     console.info("Options:");
-    console.info("  --name         Run commands in repos matching the given name.");
+    console.info("  --name         Run commands in repos matching the given directory name.");
     console.info("                 Note: A regexp can be provided as '/expr/'.");
     console.info("  --remote-name  Run commands in repos matching the remote given name.");
     console.info("                 Note: A regexp can be provided as '/expr/'.");

@@ -47,7 +47,7 @@ var githood = function (options) { return __awaiter(void 0, void 0, void 0, func
                     cwd: options.cwd,
                     filterByGithubUsername: options.org,
                     filterByGithubRepoName: options.remoteName,
-                    filterByRepoName: options.name,
+                    filterByRepoName: options.name
                 })];
             case 1:
                 gitRepos = _a.sent();
