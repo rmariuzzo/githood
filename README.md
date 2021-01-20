@@ -32,7 +32,7 @@ githood git status
 #### Running a command across git repos in a GitHub org
 
 ```shell
-githood git status --org rmariuzzo
+githood --org rmariuzzo -- git status
 ```
 
 ## Options
